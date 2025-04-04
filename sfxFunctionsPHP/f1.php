@@ -106,4 +106,58 @@ $to = '123';
 $str = strtr($str, $from, $to);
 echo $str.'<br>';
 
+//Нахождение позиций подстроки:
+$str = 'abc abc abc';
+echo strpos($str, 'b').'<br>'; //first b
+echo strrpos($str, 'b').'<br>'; //last b
+
+$str = 'aaa aaa aaa aaa aaa';
+$firstSpace = strpos($str, ' ');
+$secondSpace = strpos($str, ' ', $firstSpace+1);
+echo $secondSpace.'<br>';
+
+$str = 'the end...';
+$dots = strpos($str, '..');
+if ($dots !== false) {
+    echo 'yes<br>';
+} else {
+    echo 'no<br>';
+}
+
+$str = 'http://google.com';
+if (strpos($str, 'http://') === 0) {
+    echo 'yes';
+} else {
+    echo 'no';
+}
+echo '<br>';
+
+//Объединение и разивание строк:
+$str = 'html css php';
+$words = explode(' ', $str);
+var_dump($words); echo '<br>';
+
+$date = '2013-12-31';
+$dates = explode('-', $date);
+echo $dates[2].'.'.$dates[1].'.'.$dates[0].'.'.'<br>';
+
+//Преобразует строку в массив:
+$str = '1234567890';
+$arr1 = str_split($str, 2);
+$arr2 = str_split($str);
+print_r($arr1); echo '<br>';
+print_r($arr2); echo '<br>';
+
+//Очистка строк:
+$str = ' space ';
+$str = trim($str, ' ');
+echo $str.'<br>';
+
+$str = '/php/';
+$str = trim($str, '/');
+echo $str.'<br>';
+
+$str = 'слова слова слова';
+$str = rtrim($str, '.').'.';
+echo $str.'<br>';
 
