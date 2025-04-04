@@ -72,5 +72,38 @@ if (substr($str, -4) == '.jpg' || substr($str, -4) == '.png') {
 
 $str = '123456';
 if (strlen($str) > 5) {
-    
+    $result = substr($str, 5) . '...';
+    echo $result;
+} else {
+    echo $str;
+} echo '<br>';
+
+//Замена символов (str_replace):
+$str = '31.12.2013';
+echo str_replace('.', '-', $str).'<br>';
+
+$str = 'abc';
+$str = str_replace('a', '1', $str);
+$str = str_replace('b', '2', $str);
+$str = str_replace('c', '3', $str);
+echo $str . '<br>';
+
+$str = '1a2b3c4b5d6e7f8g9h0';
+for ($i = 0; $i <= 9; $i++) {
+    $str = str_replace((string)$i, '', $str);
 }
+echo $str.'<br>';
+
+//Замена символов (strtr):
+$str = 'abc';
+$replace = ['a'=>'1', 'b'=>'2', 'c'=>'3'];
+$str = strtr($str, $replace);
+echo $str.'<br>';
+
+$str = 'abcdefg';
+$from = 'abc';
+$to = '123';
+$str = strtr($str, $from, $to);
+echo $str.'<br>';
+
+
