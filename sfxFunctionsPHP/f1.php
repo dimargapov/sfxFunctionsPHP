@@ -161,3 +161,50 @@ $str = 'слова слова слова';
 $str = rtrim($str, '.').'.';
 echo $str.'<br>';
 
+
+//Работа с strrev:
+$str = '12345';
+echo strrev($str) . '<br>';
+
+$palindrom = 'spelleps';
+$reverse = strrev($palindrom);
+if ($reverse == $palindrom) {
+    echo "Palindrom<br>";
+} else {
+    echo "Not a palindrom<br>";
+}
+
+//Работа с number_format:
+$str = '12345678';
+echo number_format($str, 0, ' ', ' ') . '<br>';
+
+//Работа с str_repeat:
+for ($i = 1; $i <= 9; $i++) {
+    echo str_repeat('x', $i) . '<br>';
+}
+
+for ($i = 1; $i <= 9; $i++) {
+    echo str_repeat((string)$i, $i) . '<br>';
+}
+//Работа с strip_tags и htmlspecialchars
+$str = 'html, <b>php</b>, js';
+echo strip_tags($str) . '<br>';
+
+$str = '<b>php</b>,<i>html</i>,<strong>js</strong>';
+echo strip_tags($str, '<b><i>') . '<br>';
+
+$str = 'html, <b>php</b>, js';
+echo htmlspecialchars($str) . '<br>';
+
+//Доп задачи
+$str = 'var_test_text';
+echo lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $str)))) . '<br>';
+
+$arr = [3, 2, 54, 23, 67, 234, 546];
+$arr2 = [];
+foreach ($arr as $nums) {
+    if (strpos($nums, '3') !== false) {
+        array_push($arr2, $nums);
+    }
+}
+var_dump($arr2);
