@@ -355,27 +355,365 @@ if (isset($_POST['letters'])) {
 Пользователь читает вопрос, пишет свой ответ в инпут.
 Когда вопросы заканчиваются - он жмет на кнопку, страница обновляется и вместо инпутов под вопросами появляется сообщение вида:
 'ваш ответ: ... верно!' или 'ваш ответ: ... неверно! Правильный ответ: ...'.
-Правильно отвеченные вопросы должны гореть зеленым цветом, а неправильно - красным.-->
+Правильно отвеченные вопросы должны гореть зеленым цветом, а неправильно - красным.
+Все работает. Заккоментил, чтобы не мешало следующему скрипту-->
     <br>
-    <form action="f8.php" method="post">
-        <p>Год окончания ВОВ</p>
-        <input type="text" name="answer1" />
-        <p>Количество букв в слове "ёж"</p>
-        <input type="text" name="answer2" />
-        <p>Майкл Джексон жив?</p>
-        <input type="text" name="answer3" />
-        <input type="submit" value="click" />
-    </form>
-<?php $questionsAnswers = [
-        'Год окончания ВОВ' => '1945',
-        'Количество букв в слове "ёж"' => '27',
-        'Майкл Джексон жив?' => 'Да'
+    <style>
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+    </style>
+<?php //$questionsAnswers = [
+//        ['question' => 'Год окончания ВОВ', 'answer' => '1945'],
+//        ['question' => 'Количество букв в слове "ёж"', 'answer'  => '27'],
+//        ['question' => 'Майкл Джексон жив?','answer'  => 'Да']
+//];
+//if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//    foreach ($questionsAnswers as $index => $item) {
+//        $userAnswer = trim($_POST["answer_$index"]);
+//        $correctAnswer = $item['answer'];
+//        echo "<p>{$item['question']}</p>";
+//        if (strcasecmp($userAnswer, $correctAnswer) === 0) {
+//            echo "<p class='correct'>Ваш ответ: {$userAnswer} — верно!</p>";
+//        } else {
+//            echo "<p class='incorrect'>Ваш ответ: {$userAnswer} — неверно! Правильный ответ: {$correctAnswer}</p>";
+//        }
+//    }
+//
+//} else {
+//    echo '<form action="f8.php" method="post">';
+//    foreach ($questionsAnswers as $index => $item) {
+//        echo "<p>{$item['question']}</p>";
+//        echo "<input type='text' name='answer_$index' required><br>";
+//    }
+//    echo '<button type="submit">Проверить ответы</button>';
+//    echo '</form>';
+//}
+//?>
+
+<br><br>
+
+<!--Модифицируем предыдущую задачу: пусть теперь тест показывает варианты ответов и радиокнопочки.
+Пользователь должен выбрать один и вариантов.
+Все работает, заккоментил чтобы не мешало следующему скрипту-->
+<?php //$questionsAnswers = [
+//    ['question' => 'Год окончания ВОВ', 'answer' => '1945'],
+//    ['question' => 'Количество букв в слове "ёж"', 'answer'  => '27'],
+//    ['question' => 'Майкл Джексон жив?','answer'  => 'Да']
+//];
+//if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//    $userAnswers = [$_POST["q1"], $_POST["q2"], $_POST["q3"]];
+//    foreach ($questionsAnswers as $index => $item) {
+//        $correctAnswer = $item['answer'];
+//        $userAnswer = $userAnswers[$index];   {
+//            if ($userAnswer === $correctAnswer) {
+//                echo "<p class='correct'>Ваш ответ: {$userAnswer} — верно!</p>";
+//            } else {
+//                echo "<p class='incorrect'>Ваш ответ: {$userAnswer} — неверно! Правильный ответ: {$correctAnswer}</p>";
+//            }
+//        }
+//    }
+//}
+//    else {
+//        echo '<form action="f8.php" method="post">';
+//        echo '<p>Год окончания ВОВ<br>';
+//        echo "<input type='radio' name='q1' value='1812' />1812 <br>
+//               <input type='radio' name='q1' value='1945' />1945 <br>
+//               <input type='radio' name='q1' value='2025' />2025 <br>
+//               <p>Количество букв в слове 'ёж'<br>
+//        <input type='radio' name='q2' value='8' />8<br>
+//        <input type='radio' name='q2' value='2' />2<br>
+//        <input type='radio' name='q2' value='27' />27<br>
+//    <p>Майкл Джексон жив?<br>
+//        <input type='radio' name='q3' value='Да' />Да<br>
+//        <input type='radio' name='q3' value='Нет' />Нет<br>
+//        <input type='radio' name='q3' value='Цой жив' />Цой жив<br>
+//";
+//        echo '<button type="submit">Проверить ответы</button>';
+//        echo '</form>';
+//}
+//?>
+
+<!--Модифицируем предыдущую задачу:
+пусть теперь на один вопрос может быть несколько правильных ответов.
+Пользователь должен отметить один или несколько чекбоксов.-->
+<?php
+$questionsAnswers = [
+    ['question' => 'Год окончания ВОВ', 'answer' => ['2025', '1812']],
+    ['question' => 'Количество букв в слове "ёж"', 'answer'  => ['2', '8']],
+    ['question' => 'Майкл Джексон жив?','answer'  => ['Нет', 'Цой жив']]
 ];
-if (isset($_POST['question1']) && isset($_POST['question2']) && isset($_POST['question3'])) {
-    $answer1 = strip_tags($_POST['question1']);
-    $answer2 = strip_tags($_POST['question2']);
-    $answer3 = strip_tags($_POST['question3']);
-    $answers = [$answer1, $answer2, $answer3];
-    foreach ($questionsAnswers as $question => $answer) {
-        
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $userAnswers = [];
+    foreach ($questionsAnswers as $index => $item) {
+    $fieldName = "q" . ($index + 1);
+    $userAnswer = $_POST[$fieldName] ?? null;
+
+    if ($userAnswer) {
+        $userAnswers[] = $userAnswer;
+    } else {
+        $userAnswers[] = [];
+    }
+        $correctAnswer = $item['answer'];
+            $userAnswer = $userAnswers[$index];
+            if (empty($userAnswer)) {
+                echo "<p class='incorrect'>Вы не выбрали ответ.</p>";
+            } else {
+                $correct = true;
+                foreach ($userAnswer as $answer) {
+                    if (!in_array($answer, $correctAnswer)) {
+                        $correct = false;
+                        break;
+                    }
+                }
+                if ($correct && count($userAnswer) === count($correctAnswer)) {
+                    echo "<p class='correct'>Ваши ответы: ";
+                    foreach ($userAnswer as $answer) {
+                        echo "$answer ";
+                    }
+                    echo "— верно!</p>";
+                } else {
+                    echo "<p class='incorrect'>Ваши ответы: ";
+                    foreach ($userAnswer as $answer) {
+                        echo "$answer ";
+                    }
+                    echo "— неверно! Правильные ответы: ";
+                    foreach ($correctAnswer as $answer) {
+                        echo "$answer ";
+                    }
+                    echo "</p>";
+                }
+            }
+
+        }
+
+
+        }
+    else {
+        echo '<form action="f8.php" method="post">';
+        echo '<h4>Тест (Выбирать только неправильные ответы)</h4>';
+        echo '<p>Год окончания ВОВ<br>';
+        echo "<input type='checkbox' name='q1[]' value='1812' />1812 <br>
+               <input type='checkbox' name='q1[]' value='1945' />1945 <br>
+               <input type='checkbox' name='q1[]' value='2025' />2025 <br>
+               <p>Количество букв в слове 'ёж'<br>
+        <input type='checkbox' name='q2[]' value='8' />8<br>
+        <input type='checkbox' name='q2[]' value='2' />2<br>
+        <input type='checkbox' name='q2[]' value='27' />27<br>
+    <p>Майкл Джексон жив?<br>
+        <input type='checkbox' name='q3[]' value='Да' />Да<br>
+        <input type='checkbox' name='q3[]' value='Нет' />Нет<br>
+        <input type='checkbox' name='q3[]' value='Цой жив' />Цой жив<br>
+";
+        echo '<button type="submit">Проверить ответы</button>';
+        echo '</form>';
 }
+    ?>
+
+<!--Напишите скрипт, который будет находить корни квадратного уравнения. -->
+<!--Для этого сделайте 3 инпута, в которые будут вводиться коэффициенты уравнения.-->
+
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Найти корни квадртного уравнения</h4>-->
+<!--    <input type="number" name="a" placeholder="a" />-->
+<!--    <input type="number" name="b" placeholder="b" />-->
+<!--    <input type="number" name="c" placeholder="c" />-->
+<!--    <input type="submit" value="click" />-->
+<!--</form>-->
+<?php
+//if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//    $a = $_POST['a'];
+//    $b = $_POST['b'];
+//    $c = $_POST['c'];
+//    if ($a === 0) {
+//        echo '"a" не может быть равна нулю';
+//    } else {
+//        $d = $b * $b - 4 * $a * $c;
+//        if ($d < 0) {
+//            echo 'Уравнение не имеет действительных корней, дискриминант = ' . $d;
+//        } else if ($d === 0) {
+//            $x = -($b / (2 * $a));
+//            echo "x = $x";
+//        } else {
+//            $x1 = (-$b + sqrt($d)) / (2 * $a);
+//            $x2 = (-$b - sqrt($d)) / (2 * $a);
+//            echo "<br>d = $d, x1 = $x1, x2 = $x2";
+//        }
+//    }
+//}
+//?>
+
+    <!--Даны 3 инпута. В них вводятся числа. -->
+    <!--Проверьте, что эти числа являются тройкой Пифагора: -->
+    <!--квадрат самого большого числа должен быть равен сумме квадратов двух остальных.-->
+<!--<br><br>-->
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Проверить на тройку Пифагора</h4>-->
+<!--    <input type="number" name="A" placeholder="a" />-->
+<!--    <input type="number" name="B" placeholder="b" />-->
+<!--    <input type="number" name="C" placeholder="c" />-->
+<!--    <input type="submit" value="click" />-->
+<!--</form>-->
+<!---->
+<?php
+//if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//    $a = $_POST['A'];
+//    $b = $_POST['B'];
+//    $c = $_POST['C'];
+//    $arrAnswers = [$a, $b, $c];
+//    rsort($arrAnswers);
+//    $arrAnswers[0] **= 2;
+//    $sumOthers = ($arrAnswers[1] ** 2) + ($arrAnswers[2] ** 2);
+//    if ($arrAnswers[0] === $sumOthers) {
+//        echo 'Набор чисел является тройкой Пифагора';
+//    } else {
+//        echo 'Набор чисел не является тройкой Пифагора';
+//    }
+//}
+//?>
+
+<!--Дан инпут и кнопка. В инпут вводится число. По нажатию на кнопку выведите список делителей этого числа.-->
+<!--<br><br>-->
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Делители числа</h4>-->
+<!--    <input type="number" name="number" />-->
+<!--    <input type="submit" value="click" />-->
+<!--</form>-->
+<!---->
+<?php
+//$number = $_POST["number"];
+//for ($i = 1; $i <= $number; $i++) {
+//    if ($number % $i === 0) {
+//        echo "$i<br>";
+//    }
+//}
+//?>
+<!---->
+<!---->
+<!--<!--Дан инпут и кнопка. В инпут вводится число. По нажатию на кнопку разложите число на простые множители.-->-->
+<!--<br><br>-->
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Разложение на простые множители</h4>-->
+<!--    <input type="number" name="number" />-->
+<!--    <input type="submit" value="click" />-->
+<!--</form>-->
+<?php
+//$number = $_POST["number"];
+//function factorize($number) {
+//    $factors = [];
+//    $divisor = 2;
+//
+//    while ($number > 1) {
+//        while ($number % $divisor === 0) {
+//            $factors[] = $divisor;
+//            $number /= $divisor;
+//        }
+//        $divisor++;
+//    }
+//    return $factors;
+//}
+//$factors = factorize($number);
+//echo print_r($factors, true);
+//?>
+<!---->
+<!--<!--Даны 2 инпута и кнопка. В инпуты вводятся числа. По нажатию на кнопку выведите наибольший общий делитель этих двух чисел.-->-->
+<!--<br><br>-->
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Нахождение НОД</h4>-->
+<!--    <input type="number" name="a1" />-->
+<!--    <input type="number" name="b1" />-->
+<!--    <input type="submit" value="НОД" />-->
+<!--</form>-->
+<?php
+//$a1 = $_POST["a1"];
+//$b1 = $_POST["b1"];
+//$a1Factors = factorize($a1);
+//$b1Factors = factorize($b1);
+//$factorsArr = array_unique(array_intersect($a1Factors, $b1Factors));
+//$nod = array_product($factorsArr);
+//echo $nod.'<br>';
+//?>
+<!---->
+<!--<!--Даны 2 инпута и кнопка. В инпуты вводятся числа.-->
+<!--По нажатию на кнопку выведите наименьшее число, которое делится и на одно, и на второе из введенных чисел.-->-->
+<!--<br><br>-->
+<!--<form action="f8.php" method="post">-->
+<!--    <h4>Нахождение НОК</h4>-->
+<!--    <input type="number" name="a2" />-->
+<!--    <input type="number" name="b2" />-->
+<!--    <input type="submit" value="НОК" />-->
+<!--</form>-->
+<?php
+//$num1 = $_POST["a2"];
+//$num2 = $_POST["b2"];
+//function lcm($a, $b) {
+//    $max = max($a, $b);
+//    while (true) {
+//        if ($max % $a === 0 && $max % $b === 0) {
+//            return $max;
+//        }
+//        $max++;
+//    }
+//}
+//$lcm = lcm($num1, $num2);
+//echo "НОК: $lcm";
+//?>
+
+<!--Даны 3 селекта и кнопка. Первый селект - это дни от 1 до 31, второй селект - это месяцы от января до декабря,
+а третий - это годы от 1990 до 2025. С помощью этих селектов можно выбрать дату.
+По нажатию на кнопку выведите на экран день недели, соответствующий этой дате, например, 'воскресенье'.-->
+<br><br>
+<h4>Узнай день недели!</h4>
+<br>
+<form action="f8.php" method="post">
+    <select name="day">
+        <?php
+        for ($i = 1; $i <= 31; $i++) {
+            echo "<option value='$i'>$i</option>";
+        }
+        ?>
+    </select>
+
+    <select name="month">
+        <option value="1">Январь</option>
+        <option value="2">Февраль</option>
+        <option value="3">Март</option>
+        <option value="4">Апрель</option>
+        <option value="5">Май</option>
+        <option value="6">Июнь</option>
+        <option value="7">Июль</option>
+        <option value="8">Август</option>
+        <option value="9">Сентябрь</option>
+        <option value="10">Октябрь</option>
+        <option value="11">Ноябрь</option>
+        <option value="12">Декабрь</option>
+    </select>
+
+    <select name="year">
+        <?php
+        for ($i = 1990; $i <= 2025; $i++) {
+            echo "<option value='$i'>$i</option>";
+        }
+        ?>
+    </select>
+    <button type="submit">Выбрать дату</button>
+</form>
+<?php
+$day = $_POST["day"];
+$month = $_POST["month"];
+$year = $_POST["year"];
+
+$date = date_create($year . '-' . $month . '-' . $day);
+$day = $date->format('d');
+$month = $date->format('m');
+$year = $date->format('Y');
+$dayOfWeek = $daysOfWeek[$date->format('l')];
+echo "$dayOfWeek<br>";
+?>
+
+
+
+
